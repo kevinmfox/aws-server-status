@@ -17,7 +17,7 @@ sudo mkdir -p $TARGET_DIR
 echo "${master_ip}" > $TARGET_DIR/master-ip.txt
 
 # pull down the python app script
-curl -o $TARGET_DIR/child.py https://raw.githubusercontent.com/kevinmfox/server-status/main/scripts/child.py
+curl -o $TARGET_DIR/child.py https://raw.githubusercontent.com/kevinmfox/aws-server-status/main/scripts/child.py
 
 sudo chmod +x $TARGET_DIR/child.py
 

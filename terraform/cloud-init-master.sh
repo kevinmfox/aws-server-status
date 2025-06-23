@@ -64,9 +64,9 @@ sudo mkdir -p $TARGET_DIR/templates
 echo "127.0.0.1" > $TARGET_DIR/master-ip.txt
 
 # pull down the application files
-curl -o $TARGET_DIR/master.py https://raw.githubusercontent.com/kevinmfox/server-status/main/scripts/master.py
-curl -o $TARGET_DIR/app.py https://raw.githubusercontent.com/kevinmfox/server-status/main/web-app/app.py
-curl -o $TARGET_DIR/templates/index.html https://raw.githubusercontent.com/kevinmfox/server-status/main/web-app/index.html
+curl -o $TARGET_DIR/master.py https://raw.githubusercontent.com/kevinmfox/aws-server-status/main/scripts/master.py
+curl -o $TARGET_DIR/app.py https://raw.githubusercontent.com/kevinmfox/aws-server-status/main/web-app/app.py
+curl -o $TARGET_DIR/templates/index.html https://raw.githubusercontent.com/kevinmfox/aws-server-status/main/web-app/index.html
 
 # setup our flask web app service
 cat <<EOFAPP > /etc/systemd/system/server-status.service
