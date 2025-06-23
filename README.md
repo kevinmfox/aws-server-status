@@ -40,6 +40,7 @@ You can obviously expand on this (add regions, add servers, add subnets, etc.), 
 - Adding the associated provider to the 'main.tf' file for that region (copy/paste/small updates)
 - Adding the associated module block to the 'main.tf' file for that region (copy/paste/small updates)
 - Ensuring the 'vpcs' variable in variables.tf' reflects the environment you want
+- Make sure you've got an appropriate AMI specified for each region, and that you've got the relevant AWS EC2 Key Pair in each region
 
 Once deployed, you can access the wesite (Terraform will output the link) on the 'master' server, and you'll get something like this:
 
