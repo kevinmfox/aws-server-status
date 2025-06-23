@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Server Status</title>
+  <meta http-equiv="refresh" content="10">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/1.0.4/css/bulma.min.css">
+  <style>
+    .ok {
+      background-color: #c8f7c5 !important;
+    }
+
+    .fail {
+      background-color: #f7c5c5 !important;
+    }
+
+    .self {
+      background-color: #eeeeee !important;
+    }
+
+    table th,
+    table td {
+      border-color: #555 !important;
+    }
+
+    table {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <section class="section">
+    <h1 class="title is-3">Server Ping Matrix</h1>
+
+    <table class="table is-bordered is-hoverable">
+      <tr>
+        <th></th>
+        {% for col in instances %}
+        <th>{{ col }}</th>
+        {% endfor %}
+      </tr>
+      {% for row in instances %}
+      <tr>
+        <th>{{ row }}</th>
+        {% for col in instances %}
+        {% if row == col %}
+        <td class="self">–</td>
+        {% else %}
+        {% set cell = matrix[row][col] %}
+        <td class="{{ 'ok' if cell.status == 1 else 'fail' if cell.status == 0 else '' }}">
+          {% if cell.status == 1 %}
+          ✅<br>{{ cell.latency }} ms
+          {% elif cell.status == 0 %}
+          ❌
+          {% else %}
+          –
+          {% endif %}
+        </td>
+        {% endif %}
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </table>
+
+    <h1 class="title is-3">Instance Details</h1>
+
+    <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+      <thead>
+        <tr>
+          <th>Instance ID</th>
+          <th>Hostname</th>
+          <th>Private IP</th>
+          <th>Public IP</th>
+          <th>Availability Zone</th>
+          <th>VPC ID</th>
+          <th>VPC Name</th>
+          <th>Subnet ID</th>
+          <th>Subnet Name</th>
+          <th>Last Seen</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in instance_info %}
+        <tr>
+          <td>{{ row.instance_id }}</td>
+          <td>{{ row.hostname }}</td>
+          <td>{{ row.private_ip }}</td>
+          <td>{{ row.public_ip }}</td>
+          <td>{{ row.availability_zone }}</td>
+          <td>{{ row.vpc_id }}</td>
+          <td>{{ row.vpc_name }}</td>
+          <td>{{ row.subnet_id }}</td>
+          <td>{{ row.subnet_name }}</td>
+          <td>{{ row.last_seen }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+</body>
+
+</html>
