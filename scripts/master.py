@@ -1,5 +1,7 @@
 import boto3
 import pymysql
+import requests
+import time
 from datetime import datetime
 
 with open('/opt/server-status/master-ip.txt', 'r') as f:
@@ -12,6 +14,8 @@ DB_CONFIG = {
     'database': 'servers',
     'cursorclass': pymysql.cursors.DictCursor
 }
+
+GEO_API_URL = "http://ip-api.com/json/{}?fields=status,message,lat,lon"
 
 def get_missing_entries():
     conn = pymysql.connect(**DB_CONFIG)
@@ -74,6 +78,55 @@ def update_entry(instance_id, network_info):
     cursor.close()
     conn.close()
 
+def get_location(ip):
+    try:
+        res = requests.get(GEO_API_URL.format(ip), timeout=5)
+        data = res.json()
+        if data['status'] == 'success':
+            return data['lat'], data['lon']
+        else:
+            print(f"Lookup error: {data.get('message')}")
+    except Exception as e:
+        print(f'Error with Geo lookup: {ip}; {e}')
+    return None, None
+
+def update_missing_geo_coords():
+    conn = pymysql.connect(**DB_CONFIG)
+    try:
+        with conn.cursor() as cursor:
+            statement = """
+                SELECT 
+                    public_ip 
+                FROM server_info
+                WHERE geo_lat IS NULL OR geo_lon IS NULL
+                AND public_ip IS NOT NULL
+            """
+            cursor.execute(statement)
+            results = cursor.fetchall()
+
+            print(f'Found {len(results)} servers missing coordinates...')
+
+            for row in results:
+                public_ip = row['public_ip']
+                lat, lon = get_location(public_ip)
+
+                if lat is not None and lon is not None:
+                    statement = """
+                        UPDATE server_info
+                        SET geo_lat = %s, geo_lon = %s
+                        WHERE public_ip = %s
+                    """
+                    cursor.execute(statement, (lat, lon, public_ip))
+                    conn.commit()
+                    print(f'Updated {public_ip} → ({lat}, {lon})')
+                else:
+                    print(f'Skipped {public_ip} (no location found)')
+
+                # avoid throttling
+                time.sleep(2)
+    finally:
+        conn.close()
+
 def cleanup_old_entries():
     conn = pymysql.connect(**DB_CONFIG)
     cursor = conn.cursor()
@@ -103,4 +156,5 @@ for entry in entries:
         update_entry(instance_id, network_info)
     except Exception as e:
         print(f'Update failed: {e}')
+update_missing_geo_coords()
 cleanup_old_entries()

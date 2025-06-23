@@ -5,6 +5,8 @@
   <title>Server Status</title>
   <meta http-equiv="refresh" content="10">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/1.0.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     .ok {
       background-color: #c8f7c5 !important;
@@ -97,6 +99,24 @@
         {% endfor %}
       </tbody>
     </table>
+
+    <h2 class="title is-3">Server Geomap</h2>
+    <div id="map" style="height: 500px; margin-bottom: 30px;"></div>
+
+    <script>
+      const map = L.map('map').setView([20, 0], 2);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+      }).addTo(map);
+
+      const markers = {{ geo_markers| tojson }};
+      markers.forEach(m => {
+        L.marker([m.lat, m.lon]).addTo(map)
+          .bindPopup(`<strong>${m.hostname}</strong><br>${m.ip}`);
+      });
+    </script>
+
   </section>
 </body>
 

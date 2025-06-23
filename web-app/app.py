@@ -58,13 +58,26 @@ def status_matrix():
                     vpc_name,
                     subnet_id, 
                     subnet_name, 
+                    geo_lat,
+                    geo_lon,
                     last_seen
                 FROM server_info
                 ORDER BY hostname            
             """
             cursor.execute(statement)
             instance_info = cursor.fetchall()
+
+            geo_markers = [
+                {
+                    'hostname': row['hostname'],
+                    'ip': row['public_ip'],
+                    'lat': row['geo_lat'],
+                    'lon': row['geo_lon']
+                }
+                for row in instance_info
+                if row['geo_lat'] is not None and row['geo_lon'] is not None
+            ]
     finally:
         conn.close()
 
-    return render_template('index.html', instances=instances, instance_info=instance_info, matrix=matrix)
+    return render_template('index.html', instances=instances, instance_info=instance_info, matrix=matrix, geo_markers=geo_markers)

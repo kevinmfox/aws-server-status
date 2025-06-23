@@ -37,6 +37,8 @@ CREATE TABLE server_info (
   vpc_name varchar(45) DEFAULT NULL,
   subnet_id varchar(45) DEFAULT NULL,
   subnet_name varchar(45) DEFAULT NULL,
+  geo_lat float DEFAULT NULL,
+  geo_lon float DEFAULT NULL,
   last_seen timestamp NULL DEFAULT NULL,
   PRIMARY KEY (instance_id),
   UNIQUE KEY instance_id_UNIQUE (instance_id)
