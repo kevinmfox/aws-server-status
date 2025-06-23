@@ -18,9 +18,9 @@ At a _high-level_ the Terraform script will deploy:
 
 The 'master' server runs a local MySQL database to collect and report on metrics from the 'child' servers. The 'master' server also runs a local web application (port 80) to show the status of all the _children_.
 
-The 'child' servers will pull a list of _active_ servers from the 'master' server, and periodically (every 30 seconds) try to PING them. Those results will be reported back to the 'master' server.
+The 'child' servers will pull a list of _active_ servers from the 'master' server, and periodically (every 30 seconds) try to PING their __Private IPs__. Those results will be reported back to the 'master' server.
 
-For this to work properly, all 'child' servers need to be able to reach the 'master' server.
+For this to work properly, all 'child' servers need to be able to reach the 'master' server's __Public IP__.
 
 # Making It Work
 
