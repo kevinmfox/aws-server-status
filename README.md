@@ -46,6 +46,10 @@ Once deployed, you can access the wesite (Terraform will output the link) on the
 
 <img src="images/image01.jpg" ></a>
 
+And also a Geo-Map, becuase they're always cool to look at ;)
+
+<img src="images/image02.jpg" ></a>
+
 From there you could test environment changes to see what can/can't _talk to eachother_:
 - Create a VPC peering connection
 - Update routing tables

@@ -54,7 +54,6 @@ module "us_east_1" {
     }
 }
 
-/*
 module "us_east_2" {
     source = "./modules/"
     for_each = local.vpcs_by_region["us-east-2"]
@@ -90,7 +89,6 @@ module "us_west_2" {
         aws = aws.us-west-2
     }
 }
-*/
 
 resource "aws_vpc" "vpc" {
     cidr_block = var.master_vpc_cidr
